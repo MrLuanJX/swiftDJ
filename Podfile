@@ -10,8 +10,6 @@ target 'JJDS' do
   pod 'IQKeyboardManager'
   pod 'SnapKit'
   pod 'Alamofire'
-  pod 'PagingKit'
-  pod 'PageController'
   pod 'SDWebImage'
   pod 'WisdomHUD'
   pod 'JCyclePictureView'
