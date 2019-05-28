@@ -8,6 +8,7 @@
 
 import UIKit
 import JCyclePictureView
+import WisdomHUD
 
 class LJX_ZJListViewController: UIViewController {
     
@@ -21,8 +22,20 @@ class LJX_ZJListViewController: UIViewController {
         
     var bannerImageArray : Array<Any> = []
     
+    var hotAnalystsArray : Array<Any> = []
+
+    lazy var cycleScrollView:WRCycleScrollView = {
+        let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 200)
+        let cycleView = WRCycleScrollView(frame: frame, type: .SERVER, imgs: nil, descs: nil)
+        cycleView.pageControlAliment = .RightBottom
+        cycleView.autoScrollInterval = 3.0
+        return cycleView
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        WisdomHUD.showLoading(text: "正在加载...")
 
         pageInt = 1
         
@@ -34,7 +47,74 @@ class LJX_ZJListViewController: UIViewController {
         
         bottomRefreshData()
         
-        requestBanner()
+//        requestBanner()
+        
+//        requestData(isTopRefresh: "0")
+        
+//        hotAnalysts()
+        
+        datasRequestGroup()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(scrollToTopAction), name: NSNotification.Name(rawValue:"statusBarSelected"), object: nil)
+    }
+    
+    func datasRequestGroup() {  // private
+
+        // 创建调度组
+        let workingGroup = DispatchGroup()
+        // 创建多列
+        let workingQueue = DispatchQueue(label: "request_queue")
+        
+        // 模拟异步发送网络请求 A
+        // 入组
+        workingGroup.enter()
+        workingQueue.async {
+            
+            self.requestBanner()
+            
+            print("接口 A 数据请求完成")
+            // 出组
+            workingGroup.leave()
+        }
+      
+        // 模拟异步发送网络请求 A
+        // 入组
+        workingGroup.enter()
+        workingQueue.async {
+            
+            self.hotAnalysts()
+            
+            print("接口 A 数据请求完成")
+            // 出组
+            workingGroup.leave()
+        }
+      
+        // 模拟异步发送网络请求 B
+        // 入组
+        workingGroup.enter()
+        workingQueue.async {
+            //                Thread.sleep(forTimeInterval: 1)
+            self.requestData(isTopRefresh: "0")
+            
+            print("接口 B 数据请求完成")
+            // 出组
+            workingGroup.leave()
+        }
+        
+        print("我是最开始执行的，异步操作里的打印后执行")
+        
+        // 调度组里的任务都执行完毕
+        workingGroup.notify(queue: workingQueue) {
+            print("接口 A 和接口 B 的数据请求都已经完毕！, 开始合并两个接口的数据")
+            DispatchQueue.main.sync {
+                
+                self.homeTableView.reloadData()
+            }
+        }
+    }
+    
+    @objc func scrollToTopAction()  {
+        self.homeTableView.setContentOffset(CGPoint.init(x: 0, y: 0), animated: true)
     }
     
     func refreshData() {
@@ -53,53 +133,47 @@ class LJX_ZJListViewController: UIViewController {
             [unowned self] in
             
             self.requestData(isTopRefresh: "1")
+            
         }
     }
-
-    func bannerView() -> UIView {
-        
-        let cyclePictureView : JCyclePictureView = JCyclePictureView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 200), pictures: self.bannerImageArray as? [String])
-        // 滚动方向
-        cyclePictureView.direction = .left
-        // 自动滚动时间
-        cyclePictureView.autoScrollDelay = 5
-        // 标题
-        cyclePictureView.titles = Array.init()
-        // 点击回调
-        cyclePictureView.didTapAtIndexHandle = { index in
-            print("点击了第 \(index + 1) 张图片")
-        }
-        // 自定义 cell
-        cyclePictureView.register([CustomCell.self], identifiers: ["CustomCell"]) { (collectionView, indexPath, picture) -> UICollectionViewCell in
-            
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CustomCell", for: indexPath) as! CustomCell
-            
-            if picture.hasPrefix("http") {
-                cell.imageView.kf.setImage(with: URL(string: picture), placeholder: nil)
-            } else {
-                cell.imageView.image = UIImage(named: picture)
-            }
-            cell.label.text = ""
-            cell.label.textColor = UIColor.white
-            return cell
-        }
-        return cyclePictureView
-    }
-
+    
     // banner图
     func requestBanner()  {
         LJXRequestSwiftTool.shareInstance.getRequest(urlString:zjBannerURL, params: nil, header: nil, success: { (data) in
             
             guard let resopnse = data as? Dictionary<String, Any> else {return}
             
-            let bannerArray : Array<LJX_BannerModel> = LJX_BannerModel.mj_objectArray(withKeyValuesArray: resopnse["data"]) as! [LJX_BannerModel]
+            let bannerArray : Array<LJX_ZJBannerModel> = LJX_ZJBannerModel.mj_objectArray(withKeyValuesArray: resopnse["app_banners"]) as! [LJX_ZJBannerModel]
             
             for bannerModel in bannerArray {
                 
-                self.bannerImageArray.append(bannerModel.cover_image ?? String())
+                self.bannerImageArray.append(bannerModel.full_image_url ?? String())
+            }
+           
+            self.cycleScrollView.serverImgArray = self.bannerImageArray as? [String]
+            
+//            self.homeTableView.reloadData()
+        }) { (error) in
+            print(error)
+        }
+    }
+    
+    // 热门专家
+    func hotAnalysts() {
+        
+        LJXRequestSwiftTool.shareInstance.getRequest(urlString:zjHotAnalystsURL, params: nil, header: nil, success: { (data) in
+            
+            print(data)
+            
+            guard let resopnse = data as? Dictionary<String, Any> else {return}
+            
+             let dataArray : Array<LJX_HomeAnalystsModel> = LJX_HomeAnalystsModel.mj_objectArray(withKeyValuesArray: resopnse["analysts"]) as! [LJX_HomeAnalystsModel]
+            
+            if  dataArray.count > 0 {
+                self.hotAnalystsArray += dataArray
             }
             
-            self.homeTableView.tableHeaderView = self.currentIndex == 0 ? self.bannerView() : UIView.init()            
+//            self.homeTableView.reloadData()
         }) { (error) in
             print(error)
         }
@@ -112,11 +186,13 @@ class LJX_ZJListViewController: UIViewController {
             self.dataArray.removeAll()
         }
         
-        let requestStr = "\(homeNewsURL)game_id=\(String(currentIndex+1))&page=\(String(pageInt))"
+        let requestStr = currentIndex == 0 ? "\(zjsyBaseURL)number=8&page=\(String(pageInt))" : "\(zjsyBaseURL)number=8&game_id=\(String(currentIndex))&page=\(String(pageInt))"
         
         print("str = " , requestStr)
         
         LJXRequestSwiftTool.shareInstance.getRequest(urlString:requestStr, params: nil, header: nil, success: { (data) in
+            WisdomHUD.dismiss()
+
             self.homeTableView.es.stopPullToRefresh()
             self.homeTableView.es.stopLoadingMore()
             
@@ -124,7 +200,7 @@ class LJX_ZJListViewController: UIViewController {
             
             guard let resopnse = data as? Dictionary<String, Any> else {return}
             
-            let dataArray : Array<LJX_HomeModel> = LJX_HomeModel.mj_objectArray(withKeyValuesArray: resopnse["data"]) as! [LJX_HomeModel]
+            let dataArray : Array<LJX_ZJListModel> = LJX_ZJListModel.mj_objectArray(withKeyValuesArray: resopnse["data"]) as! [LJX_ZJListModel]
             
             if dataArray.count > 0{
                 self.dataArray += dataArray
@@ -135,6 +211,7 @@ class LJX_ZJListViewController: UIViewController {
             self.homeTableView.reloadData()
             
             self.pageInt += 1
+            
         }) { (error) in
             print(error)
             self.homeTableView.es.stopPullToRefresh()
@@ -148,46 +225,119 @@ class LJX_ZJListViewController: UIViewController {
     }
     
     func initTableView() {
-        homeTableView = UITableView.init()
+        homeTableView = UITableView.init(frame: CGRect(x: 0, y:0 , width: view.frame.width, height: view.frame.size.height), style: UITableView.Style.grouped)
         homeTableView.estimatedRowHeight = 50
         homeTableView.delegate = self
         homeTableView.dataSource = self
-        homeTableView.register(UITableViewCell.classForCoder(), forCellReuseIdentifier:"homeCell")
         homeTableView.tableFooterView = UIView()
+        homeTableView.estimatedSectionHeaderHeight = 0
+        homeTableView.estimatedSectionFooterHeight = 0
+        homeTableView.rowHeight = UITableView.automaticDimension
+        homeTableView.tableHeaderView = self.currentIndex == 0 ? self.cycleScrollView : nil
+        
+        if currentIndex != 0 {
+            homeTableView.contentInset = UIEdgeInsets.init(top: -40, left: 0, bottom: 0, right: 0)
+        }
         
         view.addSubview(homeTableView)
         homeTableView.snp.makeConstraints { (make) in
             make.left.right.equalTo(0)
             make.top.equalTo(0)
-            make.bottom.equalTo(-tabBarHeight)
+            make.bottom.equalTo(-41)
         }
+    }
+    
+    deinit {
+        /// 移除通知
+        NotificationCenter.default.removeObserver(self)
     }
 }
 
 extension LJX_ZJListViewController : UITableViewDelegate , UITableViewDataSource {
     
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return currentIndex == 0 ? 2 : 1
+    }
+    
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.dataArray.count
+        if currentIndex == 0 {
+            return  section == 0 ? 1 : self.dataArray.count
+        } else {
+            return self.dataArray.count
+        }
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let indentifier = "homeCell"
         
-        var homeCell:LJX_HomeTableViewCell! = tableView.dequeueReusableCell(withIdentifier:indentifier) as? LJX_HomeTableViewCell
-        
-        if homeCell == nil {
-            homeCell = LJX_HomeTableViewCell.init(style: .default, reuseIdentifier: indentifier)
+        if indexPath.section == 0 && currentIndex == 0 {
+            let indentifier = "analyCell"
+            var analyCell:LJX_AnalystsCell! = tableView.dequeueReusableCell(withIdentifier:indentifier) as? LJX_AnalystsCell
+            if analyCell == nil {
+                analyCell = LJX_AnalystsCell.init(style: .default, reuseIdentifier: indentifier)
+            }
+            analyCell.selectionStyle = UITableViewCell.SelectionStyle.none
+            if self.hotAnalystsArray.count > 0  {
+                analyCell.showAnalystsWithArray(modelArray: self.hotAnalystsArray as! Array<LJX_HomeAnalystsModel>)
+            }
+            return analyCell!
+        } else {
+            let indentifier = "zjCell"
+            
+            var zjCell:LJX_ZJTableViewCell! = tableView.dequeueReusableCell(withIdentifier:indentifier) as? LJX_ZJTableViewCell
+            
+            if zjCell == nil {
+                zjCell = LJX_ZJTableViewCell.init(style: .default, reuseIdentifier: indentifier)
+            }
+            
+            zjCell.selectionStyle = UITableViewCell.SelectionStyle.none
+            
+            zjCell.zjModel = self.dataArray[indexPath.row] as? LJX_ZJListModel
+            
+            return zjCell!
         }
-        
-        homeCell.selectionStyle = UITableViewCell.SelectionStyle.none
-        
-        homeCell.homeModel = self.dataArray[indexPath.row] as? LJX_HomeModel
-        
-        return homeCell!
     }
     
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        
+        if section == 1 {
+            let hView = UIView()
+            hView.backgroundColor = UIColor.white
+
+            let lineLabel = UILabel.init()
+            lineLabel.backgroundColor = UIColor.hexadecimalColor(hexadecimal: "#436EEE")
+            hView.addSubview(lineLabel)
+            
+            let careLabel = UILabel.init()
+            careLabel.text = "精选推荐"
+            careLabel.textColor = UIColor.hexadecimalColor(hexadecimal: "#666666")
+            careLabel.font = UIFont.systemFont(ofSize: 14)
+            hView.addSubview(careLabel)
+
+            lineLabel.snp.remakeConstraints { (make) in
+                make.top.equalTo(10)//(grayView.snp_bottom).offset(10)
+                make.left.equalTo(0)
+                make.width.equalTo(5)
+                make.bottom.equalTo(-10)
+            }
+            
+            careLabel.snp.remakeConstraints { (make) in
+                make.top.bottom.equalTo(lineLabel)
+                make.left.equalTo(lineLabel.snp_right).offset(10)
+                make.right.equalTo(-10)
+            }
+        
+            return hView
+        } else {
+            return nil
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        
+        return  section == 1 ? 40 : 0
+    }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let homeModel = self.dataArray[indexPath.row] as? LJX_HomeModel
+//        let homeModel = self.dataArray[indexPath.row] as? LJX_HomeModel
         
     }
 }

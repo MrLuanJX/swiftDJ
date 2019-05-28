@@ -1,0 +1,6 @@
+framework module Pods_JJDS {
+  umbrella header "Pods-JJDS-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -29,7 +29,7 @@ class LJX_ZJViewController: UIViewController {
             self.dataArray.append(vc)
         }
         
-        pageView = FSCPageView(frame: CGRect(x: 0, y:stateheight , width: view.frame.width, height: UIScreen.main.bounds.height - navHeight - CGFloat(tabBarHeight)), controllers: self.dataArray as! [LJX_ZJListViewController], titleArray: titleArray, selectIndex: 0, lineHeight: 2)
+        pageView = FSCPageView(frame: CGRect(x: 0, y:navHeight , width: view.frame.width, height: UIScreen.main.bounds.size.height - CGFloat(tabBarHeight) - navHeight), controllers: self.dataArray as! [LJX_ZJListViewController], titleArray: titleArray, selectIndex: 0, lineHeight: 2)
         
         return pageView
     }()
@@ -53,9 +53,9 @@ class LJX_ZJViewController: UIViewController {
         }
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        self.navigationController?.navigationBar.isHidden = true
-    }
+//    override func viewWillAppear(_ animated: Bool) {
+//        self.navigationController?.navigationBar.isHidden = true
+//    }
 
     
    

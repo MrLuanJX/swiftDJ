@@ -9,10 +9,13 @@
 import UIKit
 
 class LJX_AnalystsCell: UITableViewCell {
+    var grayView = UILabel()
+    
     var careLabel = UILabel()
     
     var lineLabel = UILabel()
     
+    var collDataArray : Array<Any> = []
     
     var _collectionView : UICollectionView?
     var collectionView : UICollectionView? {
@@ -22,6 +25,13 @@ class LJX_AnalystsCell: UITableViewCell {
         get {
             return _collectionView
         }
+    }
+    
+    func showAnalystsWithArray ( modelArray : Array<LJX_HomeAnalystsModel>) {
+        
+        self.collDataArray = modelArray
+        
+        self.collectionView?.reloadData()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -39,6 +49,10 @@ class LJX_AnalystsCell: UITableViewCell {
     }
     
     func setupUI() {
+        grayView = UILabel.init()
+        grayView.backgroundColor = UIColor.hexadecimalColor(hexadecimal: "#EBEBEB")
+        self.contentView.addSubview(grayView)
+        
         lineLabel = UILabel.init()
         lineLabel.backgroundColor = UIColor.hexadecimalColor(hexadecimal: "#436EEE")
         self.contentView.addSubview(lineLabel)
@@ -50,15 +64,15 @@ class LJX_AnalystsCell: UITableViewCell {
         self.contentView.addSubview(careLabel)
         
         let layout = UICollectionViewFlowLayout.init()
-        layout.itemSize = CGSize(width: self.frame.size.width/3, height: 140)
-        layout.minimumLineSpacing = 30
+        layout.itemSize = CGSize(width: (UIScreen.main.bounds.size.width - 50)/3, height: 140)
+        layout.minimumLineSpacing = 10
         layout.minimumInteritemSpacing = 5
         layout.scrollDirection = .horizontal
         layout.sectionInset = UIEdgeInsets.init(top: 5, left: 20, bottom: 5, right: 20)
         
         collectionView = UICollectionView.init(frame: CGRect(x:0, y:0, width:UIScreen.main.bounds.size.width, height:140), collectionViewLayout: layout)
         collectionView?.backgroundColor = self.backgroundColor//UIColor.gray
-        collectionView?.register(LJX_HomeCollectionCell.self, forCellWithReuseIdentifier: "collectionCell")
+        collectionView?.register(LJX_HomeAnalyCollectCell.self, forCellWithReuseIdentifier: "collectionCell")
 
         collectionView?.delegate = self
         collectionView?.dataSource = self
@@ -70,9 +84,14 @@ class LJX_AnalystsCell: UITableViewCell {
         self.contentView.snp.remakeConstraints { (make) in
             make.edges.equalTo(0)
         }
+        grayView.snp.remakeConstraints { (make) in
+            make.left.right.top.equalTo(0)
+            make.height.equalTo(10)
+        }
         
         careLabel.snp.remakeConstraints { (make) in
-            make.top.left.equalTo(15)
+            make.top.equalTo(grayView.snp_bottom).offset(15)
+            make.left.equalTo(15)
             make.right.equalTo(-15)
             make.height.equalTo(20)
         }
@@ -87,8 +106,7 @@ class LJX_AnalystsCell: UITableViewCell {
         lineLabel.snp.remakeConstraints { (make) in
             make.left.equalTo(0)
             make.width.equalTo(5)
-            make.top.equalTo(15)
-            make.height.equalTo(20)
+            make.height.top.equalTo(careLabel)
         }
     }
     
@@ -111,14 +129,15 @@ extension LJX_AnalystsCell : UICollectionViewDelegate , UICollectionViewDataSour
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return self.collDataArray.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell:LJX_HomeCollectionCell = collectionView.dequeueReusableCell(withReuseIdentifier: "collectionCell", for: indexPath) as! LJX_HomeCollectionCell
-        cell.bgView.backgroundColor = armColor()
-        cell.titleLabel.text = String(format:"%ditem",indexPath.row)
+        let cell:LJX_HomeAnalyCollectCell = collectionView.dequeueReusableCell(withReuseIdentifier: "collectionCell", for: indexPath) as! LJX_HomeAnalyCollectCell
+    
+        cell.anaModel = self.collDataArray[indexPath.row] as? LJX_HomeAnalystsModel
+        
         return cell
     }
     

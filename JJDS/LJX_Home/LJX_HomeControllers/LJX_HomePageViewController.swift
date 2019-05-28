@@ -15,7 +15,7 @@ class LJX_HomePageViewController: UIViewController {
     var pageView : FSCPageView! = nil
     
     lazy var pageController: FSCPageView = {
-        let titleArray = ["DOTA2","CSGO","LOL","王者荣耀"]
+        let titleArray = ["DOTA2","LOL","CSGO","王者荣耀"]
         
         for (index,value) in titleArray.enumerated() {
             //index是下标，value是值
@@ -23,7 +23,11 @@ class LJX_HomePageViewController: UIViewController {
             vc.jumpScore = {  (model)->() in
                 let detailVC = LJX_HomeDetailViewController.init()
                 
+                detailVC.tableView.scrollsToTop = true
+                
                 detailVC.detailModel = model
+                
+                detailVC.hidesBottomBarWhenPushed = true
                 
                 self.navigationController?.pushViewController(detailVC, animated: true)
             }
@@ -33,13 +37,15 @@ class LJX_HomePageViewController: UIViewController {
             self.dataArray.append(vc)
         }
         
-        pageView = FSCPageView(frame: CGRect(x: 0, y:navHeight , width: view.frame.width, height: UIScreen.main.bounds.height - navHeight - CGFloat(tabBarHeight)), controllers: self.dataArray as! [LJX_HomeViewController], titleArray: titleArray, selectIndex: 0, lineHeight: 2)
+        pageView = FSCPageView(frame: CGRect(x: 0, y:stateheight , width: view.frame.width, height: UIScreen.main.bounds.height - CGFloat(tabBarHeight) - stateheight), controllers: self.dataArray as! [LJX_HomeViewController], titleArray: titleArray, selectIndex: 0, lineHeight: 2)
         
         return pageView
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        view.backgroundColor = UIColor.white
         
         self.view.addSubview(pageController)
         
@@ -50,12 +56,19 @@ class LJX_HomePageViewController: UIViewController {
             (vc as! LJX_HomeViewController).currentIndex = selectIndex
         }
         
-    
-        
-        
     }
-
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        
+        self.navigationController?.navigationBar.isHidden = true
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(true)
+        
+        self.navigationController?.navigationBar.isHidden = false
+    }
     
     
-
 }

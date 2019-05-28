@@ -45,6 +45,7 @@ class WRCycleCell: UICollectionViewCell
     var imageContentModel:UIView.ContentMode = .scaleAspectFill {
         didSet {
             imgView.contentMode = imageContentModel
+            imgView.clipsToBounds = true
         }
     }
     
