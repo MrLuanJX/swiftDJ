@@ -7,8 +7,12 @@
 //
 
 import UIKit
+import FWPopupView
 
 class FSCPageView: UIView {
+    
+    typealias CallBackBlock = (_ selectedArr: [String]) -> Void
+    var callBackBlock: CallBackBlock?
     
     //点击或滑动按钮回调
     typealias PageBlock = (_ selectedIndex: Int) -> Void
@@ -43,6 +47,9 @@ class FSCPageView: UIView {
     
     //底部滑块高度
     var lineHeight: CGFloat = 1
+    
+    // 重新排序
+    var resetBtn = UIButton()
     
     //scrollView包含顶部标题和分割线
     lazy var segmentView: UIScrollView = {
@@ -116,7 +123,7 @@ class FSCPageView: UIView {
         //初始化顶部按钮并添加到scrollView中
         for (index, _) in controllers.enumerated() {
             let btn = UIButton(type: .custom)
-            btn.frame = CGRect(x: CGFloat(index) * frame.size.width / CGFloat(controllers.count), y: 0, width: frame.size.width / CGFloat(controllers.count), height: segmentScrollVHeight)
+            btn.frame = CGRect(x: CGFloat(index) * (frame.size.width-50) / CGFloat(controllers.count), y: 0, width: (frame.size.width-50) / CGFloat(controllers.count), height: segmentScrollVHeight)
             btn.backgroundColor = UIColor.white
             btn.tag = index
             btn.setTitle(nameArray[index], for: .normal)
@@ -129,7 +136,7 @@ class FSCPageView: UIView {
                 seleBtn = btn
                 btn.titleLabel?.font = self.selectFont
                 //将包含controllers偏移到y对应当前选中的
-                segmentScrollV.setContentOffset(CGPoint(x: CGFloat(btn.tag) * self.frame.size.width, y: 0), animated: true)
+                segmentScrollV.setContentOffset(CGPoint(x: CGFloat(btn.tag) * (self.frame.size.width-50), y: 0), animated: true)
             } else {
                 btn.isSelected = false
                 btn.titleLabel?.font = normalFont
@@ -143,12 +150,72 @@ class FSCPageView: UIView {
         downLine.backgroundColor = downColor
         segmentView.addSubview(downLine)
         
-        let selectedLineFrame = CGRect(x: avgWidth * CGFloat(selectedIndex), y: self.segmentScrollVHeight - self.lineHeight, width: avgWidth, height: lineHeight)
+        let selectWidth = (frame.size.width-50) / CGFloat(controllers.count)
+        
+        let selectedLineFrame = CGRect(x: selectWidth * CGFloat(selectedIndex), y: self.segmentScrollVHeight - self.lineHeight, width: selectWidth, height: lineHeight)
         line = UILabel(frame: selectedLineFrame)
         line.backgroundColor = lineSelectedColor
         line.tag = 100
         segmentView.addSubview(line)
         
+        resetBtn = UIButton.init(frame: CGRect(x: frame.size.width - 50, y: 0, width: 50, height: segmentScrollVHeight - 1))
+        resetBtn.setImage(UIImage.init(named: "add_channel_titlbar_thin_new_16x16_"), for: UIControl.State.normal)
+        resetBtn.backgroundColor = UIColor.white
+        resetBtn.addTarget(self, action: #selector(resetAction), for: UIControl.Event.touchUpInside)
+        segmentView.addSubview(resetBtn)
+        
+        setShadow(view: resetBtn, width: -5, bColor: UIColor.lightGray, sColor: UIColor.black, offset: CGSize.init(width: -5, height: 0), opacity: 0.1, radius: 5)
+    }
+    
+    @objc func resetAction () {
+        print("重新排序")
+        
+        showChooseView()
+    }
+    
+    func showChooseView()  {
+        let customPopupView = LJX_HomeChooseView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.2))
+        
+        customPopupView.dataArray = self.nameArray
+        
+        let vProperty = FWPopupViewProperty()
+        vProperty.popupCustomAlignment = .topCenter
+        vProperty.popupAnimationType = .position
+        vProperty.maskViewColor = UIColor(white: 0, alpha: 0.5)
+        vProperty.touchWildToHide = "1"
+        vProperty.popupViewEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        vProperty.animationDuration = 0.2
+        customPopupView.vProperty = vProperty
+        
+        customPopupView.show { (popupView, popupViewState) in
+//            print("\(popupViewState.rawValue)")
+            if popupViewState.rawValue == 3 {
+                print("隐藏")                
+                if self.nameArray != customPopupView.resetArray {
+                    print("-不同=")
+                    print(customPopupView.resetArray)
+                    
+                    NotificationCenter.default.post(name: NSNotification.Name("resetTitles"), object: nil, userInfo: ["resetArray":customPopupView.resetArray])
+                }
+            }
+        }
+    }
+    
+    func setShadow(view:UIView,width:CGFloat,bColor:UIColor, sColor:UIColor,offset:CGSize,opacity:Float,radius:CGFloat) {
+        //设置视图边框宽度
+        view.layer.borderWidth = width
+        //设置边框颜色
+        view.layer.borderColor = bColor.cgColor
+        //设置边框圆角
+        view.layer.cornerRadius = radius
+        //设置阴影颜色
+        view.layer.shadowColor = sColor.cgColor
+        //设置透明度
+        view.layer.shadowOpacity = opacity
+        //设置阴影半径
+        view.layer.shadowRadius = radius
+        //设置阴影偏移量
+        view.layer.shadowOffset = offset
     }
     
     @objc func click(sender: UIButton) {
@@ -192,7 +259,7 @@ extension FSCPageView: UIScrollViewDelegate {
         let itemWidth = scrollView.contentSize.width / CGFloat(controllers.count)
         //占比
         let rate = scrollView.contentOffset.x / itemWidth
-        let offsetX = rate * (frame.size.width / CGFloat(controllers.count))
+        let offsetX = rate * ((frame.size.width-50) / CGFloat(controllers.count))
         line.transform = CGAffineTransform(translationX: offsetX, y: 0)
     }
 }

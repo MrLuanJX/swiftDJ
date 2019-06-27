@@ -37,11 +37,13 @@ class LJX_MineViewController: UIViewController {
         }
         
         MobClick.beginLogPageView(MinePage)
+        JANALYTICSService.startLogPageView(MinePage)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
         MobClick.endLogPageView(MinePage)
+        JANALYTICSService.stopLogPageView(MinePage)
     }
     
     override func viewDidLoad() {

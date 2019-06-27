@@ -17,13 +17,15 @@ class LJX_HomeDetailViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        
+        JANALYTICSService.startLogPageView(HomeDetailPage)
         MobClick.beginLogPageView(HomeDetailPage)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
         MobClick.endLogPageView(HomeDetailPage)
+        JANALYTICSService.stopLogPageView(HomeDetailPage)
+
     }
     
     override func viewDidLoad() {

@@ -18,11 +18,15 @@ class LJX_AboutUsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         MobClick.beginLogPageView(AboutPage)
+        JANALYTICSService.startLogPageView(AboutPage)
+
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
         MobClick.endLogPageView(AboutPage)
+        JANALYTICSService.stopLogPageView(AboutPage)
+
     }
     
     override func viewDidLoad() {

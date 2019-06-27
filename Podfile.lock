@@ -1,13 +1,18 @@
 PODS:
   - Alamofire (4.8.2)
   - ESPullToRefresh (2.9)
+  - FWPopupView (4.0.6):
+    - SnapKit
   - IQKeyboardManager (6.3.0)
+  - JAnalytics (2.0.0):
+    - JCore (< 3.0.0, >= 1.2.0)
+  - JCore (2.0.1)
   - JCyclePictureView (1.0.4):
     - Kingfisher
+  - JPush (3.2.0):
+    - JCore (< 3.0.0, >= 2.0.0)
   - Kingfisher (4.10.1)
   - MJExtension (3.0.17)
-  - PageController (0.8.6)
-  - PagingKit (1.10.0)
   - SDWebImage (5.0.3):
     - SDWebImage/Core (= 5.0.3)
   - SDWebImage/Core (5.0.3)
@@ -18,11 +23,12 @@ PODS:
 DEPENDENCIES:
   - Alamofire
   - ESPullToRefresh
+  - FWPopupView
   - IQKeyboardManager
+  - JAnalytics
   - JCyclePictureView
+  - JPush
   - MJExtension
-  - PageController
-  - PagingKit
   - SDWebImage
   - SnapKit
   - UMengAnalytics
@@ -32,12 +38,14 @@ SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - Alamofire
     - ESPullToRefresh
+    - FWPopupView
     - IQKeyboardManager
+    - JAnalytics
+    - JCore
     - JCyclePictureView
+    - JPush
     - Kingfisher
     - MJExtension
-    - PageController
-    - PagingKit
     - SDWebImage
     - SnapKit
     - UMengAnalytics
@@ -46,17 +54,19 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   Alamofire: ae5c501addb7afdbb13687d7f2f722c78734c2d3
   ESPullToRefresh: ce058a36454a5032519cc9d8b45da217728cf104
+  FWPopupView: 50e0db3245879b9b73552c897b17a215ac0f9199
   IQKeyboardManager: 2ca9d64893247556f53523dcd8d78641f0ba7c23
+  JAnalytics: ec34148f72109c75acefc0606f6bc6f20040dffc
+  JCore: 8425fb3f85f1400f9bc8ccf8121cd5694a790f3b
   JCyclePictureView: 2e1e7fe6149c3acc413f15ee80d48620b07697b3
+  JPush: 8459e7a709ad86f95884fcb49cbd57a6da24744e
   Kingfisher: c148cd7b47ebde9989f6bc7c27dcaa79d81279a0
   MJExtension: 74ec83124a68891619fb7ba9c5c811bbf1691076
-  PageController: cfd3b2f81af651b56bed10cad0d940db645a8ded
-  PagingKit: 05ff12fc68f9f7ca10d75a7acdcc6c362c7f4fe3
   SDWebImage: d4f87d7d36c8a4d9f9459dc282e0caa057fdf935
   SnapKit: fe8a619752f3f27075cc9a90244d75c6c3f27e2a
   UMengAnalytics: ef8d45f94c0e5771dc364cf6a5731d9d3b101da2
   WisdomHUD: c453e920a7db4ed5d15a7bb6960ecbb2b37eb81e
 
-PODFILE CHECKSUM: d4a51abc14f0b2755ead940dff0fbf901ae4a443
+PODFILE CHECKSUM: 5081d4abd7b065400456038c1a7ed807f85a3eaa
 
 COCOAPODS: 1.6.1

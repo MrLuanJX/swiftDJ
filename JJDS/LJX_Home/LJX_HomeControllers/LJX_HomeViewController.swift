@@ -29,7 +29,9 @@ class LJX_HomeViewController: UIViewController {
     
     var dataArray : Array<Any> = []
     
-    var fArray : Array<Any> = []
+    var titleArray : Array<String> = []
+    
+    var tArray : Array<Any> = []
 
     var sArray : Array<Any> = []
 
@@ -55,11 +57,13 @@ class LJX_HomeViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         MobClick.beginLogPageView(HomePage)
+        JANALYTICSService.startLogPageView(HomePage)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
         MobClick.endLogPageView(HomePage)
+        JANALYTICSService.stopLogPageView(HomePage)
     }
     
     override func viewDidLoad() {
@@ -77,7 +81,26 @@ class LJX_HomeViewController: UIViewController {
 
         datasRequestGroup()
 
+        titleArray = ["DOTA2","LOL","CSGO","王者荣耀"]
+        
         NotificationCenter.default.addObserver(self, selector: #selector(scrollToTopAction), name: NSNotification.Name(rawValue:"statusBarSelected"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadTableView), name: NSNotification.Name(rawValue:"reloadTableView"), object: nil)
+
+    }
+    
+    @objc func reloadTableView(notif: NSNotification)  {
+         let resetArray = (notif.userInfo!["resetArray"])!
+        
+        print(resetArray)
+        
+        titleArray = resetArray as! Array<String>
+        
+        pageInt = 1
+        
+        requestData(isTopRefresh: "0")
+        
+//        self.homeTableView.reloadData()
     }
     
     func datasRequestGroup() {  // private
@@ -169,21 +192,27 @@ class LJX_HomeViewController: UIViewController {
             self.dataArray.removeAll()
         }
         
-        var num = String()
-        switch currentIndex {
-        case 0:
-            num = pageInt == 1 ? "3" : "3"
-        case 1:
-            num = pageInt == 1 ? "11" : "3"
-        case 2:
-            num = pageInt == 1 ? "12" : "3"
-        case 3:
-            num = pageInt == 1 ? "13" : "3"
-        default:
-            break
+        var numArray : Array<Any> = []
+        
+        for tag in titleArray {
+            if tag == "LOL" {
+                numArray.append("11")
+            }
+            if tag == "DOTA2" {
+                numArray.append("3")
+            }
+            if tag == "CSGO" {
+                numArray.append("12")
+            }
+            if tag == "王者荣耀" {
+                numArray.append("13")
+            }
         }
         
-        let requestStr = "\(zjsyBaseURL)number=\(String(num))&game_id=\(String(currentIndex+1))&page=\(String(pageInt))&per=\("")"
+        // 上拉加载第二页时用到
+        let num = "3"
+
+        let requestStr = "\(zjsyBaseURL)number=\(pageInt == 1 ? String(numArray[currentIndex] as! String) : num)&game_id=\(String(currentIndex+1))&page=\(String(pageInt))&per=\("")"
         
         print("str = " , requestStr)
         

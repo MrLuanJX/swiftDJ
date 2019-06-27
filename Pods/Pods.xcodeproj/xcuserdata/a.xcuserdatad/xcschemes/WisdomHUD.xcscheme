@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AA63B5EB6AE0D4A32B9B913AE3B7DAC7"
+               BlueprintIdentifier = "85452103BFDAC64A830D1F756A1B18BD"
                BuildableName = "WisdomHUD.framework"
                BlueprintName = "WisdomHUD"
                ReferencedContainer = "container:Pods.xcodeproj">

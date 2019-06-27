@@ -20,6 +20,8 @@ class LJX_SetupViewController: UIViewController {
         self.navigationController?.navigationBar.shadowImage = nil
         self.navigationItem.title = "设置"
         MobClick.beginLogPageView(SetupPage)
+        JANALYTICSService.startLogPageView(SetupPage)
+
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -29,6 +31,8 @@ class LJX_SetupViewController: UIViewController {
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
         MobClick.endLogPageView(SetupPage)
+        JANALYTICSService.stopLogPageView(SetupPage)
+
     }
     
     override func viewDidLoad() {

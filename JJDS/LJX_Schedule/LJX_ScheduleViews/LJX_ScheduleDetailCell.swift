@@ -26,7 +26,6 @@ class LJX_ScheduleDetailCell: UITableViewCell {
         set {
             _sDetailModel = newValue
             
-         
             self.leftTitle.text = "\(String("近")+String(sDetailModel?.number ?? String())+String("场"))"
             self.leftProTitle.text = "\(String(sDetailModel?.random ?? String())+String("%"))"
             var fR = Float()

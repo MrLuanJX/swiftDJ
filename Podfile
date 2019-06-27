@@ -14,6 +14,9 @@ target 'JJDS' do
   pod 'WisdomHUD'
   pod 'JCyclePictureView'
   pod 'UMengAnalytics'
+  pod 'JPush'
+  pod 'JAnalytics'
+  pod 'FWPopupView'
   # Pods for JJDS
 
 end

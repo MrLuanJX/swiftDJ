@@ -22,6 +22,8 @@
 		006F94F4228D4813006127C8 /* LJX_ExpertListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006F94F3228D4813006127C8 /* LJX_ExpertListViewController.swift */; };
 		006F94F6228D49A7006127C8 /* LJX_ExpertCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006F94F5228D49A7006127C8 /* LJX_ExpertCell.swift */; };
 		006F94F8228D4A46006127C8 /* LJX_ExpertModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006F94F7228D4A46006127C8 /* LJX_ExpertModel.swift */; };
+		008207EA229CE47B00EBEF4C /* LJX_WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008207E9229CE47B00EBEF4C /* LJX_WebViewController.swift */; };
+		00820854229E797900EBEF4C /* LJX_HomeChooseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00820853229E797900EBEF4C /* LJX_HomeChooseView.swift */; };
 		00B950F9228E52DA008D9411 /* LJX_BannerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B950F8228E52DA008D9411 /* LJX_BannerModel.swift */; };
 		00B950FC228E6823008D9411 /* LJX_ZJViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B950FB228E6823008D9411 /* LJX_ZJViewController.swift */; };
 		00B950FE228E6FBB008D9411 /* LJX_ZJListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B950FD228E6FBB008D9411 /* LJX_ZJListViewController.swift */; };
@@ -102,6 +104,9 @@
 		006F94F3228D4813006127C8 /* LJX_ExpertListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LJX_ExpertListViewController.swift; sourceTree = "<group>"; };
 		006F94F5228D49A7006127C8 /* LJX_ExpertCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LJX_ExpertCell.swift; sourceTree = "<group>"; };
 		006F94F7228D4A46006127C8 /* LJX_ExpertModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LJX_ExpertModel.swift; sourceTree = "<group>"; };
+		008207E9229CE47B00EBEF4C /* LJX_WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LJX_WebViewController.swift; sourceTree = "<group>"; };
+		008207EB229D015A00EBEF4C /* JJDS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = JJDS.entitlements; sourceTree = "<group>"; };
+		00820853229E797900EBEF4C /* LJX_HomeChooseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LJX_HomeChooseView.swift; sourceTree = "<group>"; };
 		00B950F8228E52DA008D9411 /* LJX_BannerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LJX_BannerModel.swift; sourceTree = "<group>"; };
 		00B950FB228E6823008D9411 /* LJX_ZJViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LJX_ZJViewController.swift; sourceTree = "<group>"; };
 		00B950FD228E6FBB008D9411 /* LJX_ZJListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LJX_ZJListViewController.swift; sourceTree = "<group>"; };
@@ -193,6 +198,7 @@
 				00D508FD2285507A000B25C8 /* LJX_HomeViewController.swift */,
 				006F94D322898692006127C8 /* LJX_HomeDetailViewController.swift */,
 				00B9514B2294136D008D9411 /* LJX_HomeOtherViewController.swift */,
+				00820853229E797900EBEF4C /* LJX_HomeChooseView.swift */,
 			);
 			path = LJX_HomeControllers;
 			sourceTree = "<group>";
@@ -271,6 +277,14 @@
 				006F94F7228D4A46006127C8 /* LJX_ExpertModel.swift */,
 			);
 			path = LJX_ExpertModel;
+			sourceTree = "<group>";
+		};
+		008207E8229CE46800EBEF4C /* LJX_Web */ = {
+			isa = PBXGroup;
+			children = (
+				008207E9229CE47B00EBEF4C /* LJX_WebViewController.swift */,
+			);
+			path = LJX_Web;
 			sourceTree = "<group>";
 		};
 		00B950FA228E6812008D9411 /* LJX_ZJ */ = {
@@ -374,6 +388,8 @@
 		00D508CA22854F9D000B25C8 /* JJDS */ = {
 			isa = PBXGroup;
 			children = (
+				008207EB229D015A00EBEF4C /* JJDS.entitlements */,
+				008207E8229CE46800EBEF4C /* LJX_Web */,
 				00B951E32297AD66008D9411 /* LJX_Login */,
 				00B951D1229787BA008D9411 /* LJX_Mine */,
 				00B950FA228E6812008D9411 /* LJX_ZJ */,
@@ -541,6 +557,14 @@
 					00D508C722854F9D000B25C8 = {
 						CreatedOnToolsVersion = 10.2;
 						LastSwiftMigration = 1020;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 					00D508DB22854F9E000B25C8 = {
 						CreatedOnToolsVersion = 10.2;
@@ -635,12 +659,11 @@
 				"${PODS_ROOT}/Target Support Files/Pods-JJDS/Pods-JJDS-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/ESPullToRefresh/ESPullToRefresh.framework",
+				"${BUILT_PRODUCTS_DIR}/FWPopupView/FWPopupView.framework",
 				"${BUILT_PRODUCTS_DIR}/IQKeyboardManager/IQKeyboardManager.framework",
 				"${BUILT_PRODUCTS_DIR}/JCyclePictureView/JCyclePictureView.framework",
 				"${BUILT_PRODUCTS_DIR}/Kingfisher/Kingfisher.framework",
 				"${BUILT_PRODUCTS_DIR}/MJExtension/MJExtension.framework",
-				"${BUILT_PRODUCTS_DIR}/PageController/PageController.framework",
-				"${BUILT_PRODUCTS_DIR}/PagingKit/PagingKit.framework",
 				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
 				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
 				"${BUILT_PRODUCTS_DIR}/WisdomHUD/WisdomHUD.framework",
@@ -651,12 +674,11 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ESPullToRefresh.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FWPopupView.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IQKeyboardManager.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JCyclePictureView.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Kingfisher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MJExtension.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PageController.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PagingKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WisdomHUD.framework",
@@ -673,6 +695,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				008207EA229CE47B00EBEF4C /* LJX_WebViewController.swift in Sources */,
 				00D508CE22854F9D000B25C8 /* ViewController.swift in Sources */,
 				00B951502294E2F1008D9411 /* LJX_AnalystsCell.swift in Sources */,
 				00B951552295394A008D9411 /* LJX_ZJListModel.swift in Sources */,
@@ -701,6 +724,7 @@
 				00B9514E2294DB44008D9411 /* LJX_HomeAnalystsModel.swift in Sources */,
 				00B951EB2297D9B8008D9411 /* LJX_SetupViewController.swift in Sources */,
 				006F94DC228A9DB6006127C8 /* LJX_ScheduleBaseViewController.swift in Sources */,
+				00820854229E797900EBEF4C /* LJX_HomeChooseView.swift in Sources */,
 				006F94EC228D4352006127C8 /* LJX_LOLCell.swift in Sources */,
 				00D5090D22856B42000B25C8 /* LJX_HomeTableViewCell.swift in Sources */,
 				00B951E72297D37D008D9411 /* LJX_RegistViewController.swift in Sources */,
@@ -893,6 +917,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = JJDS/JJDS.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Z5JW5D2D2V;
@@ -922,6 +947,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = JJDS/JJDS.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Z5JW5D2D2V;
